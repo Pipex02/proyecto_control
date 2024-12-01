@@ -1,22 +1,6 @@
-import control as ct
-import numpy as np
-import matplotlib.pyplot as plt
-import streamlit as st
-from define_planta import define_parameters, define_plant, design_pid_controller, define_open_loop_system
+import sympy as sp
 
-# === Establecer el estilo de la página ===
-st.markdown(
-    """
-    <style>
-    /* Establecer el ancho máximo de la página al 72% del ancho total */
-    .block-container {
-        max-width: 72%;
-        margin: auto;
-        overflow: auto;  /* Permite desplazamiento vertical si el contenido excede el área */
-        /* Reducir el margen superior para que haya menos espacio encima de la página */
-    
-    </style>
-    """, unsafe_allow_html=True)
+# Asumiendo que 'design_pid_controller_symbolic' ya está definida:
 
 def root_locus():
     m, r, d, g, l, j, Kp, Ki, Kd = define_parameters()
@@ -28,13 +12,23 @@ def root_locus():
     plant_tf = define_plant([numerador], [1, 0, 0])
     pid_tf = design_pid_controller(Kp, Ki, Kd)
 
+    # Evaluar pid_tf para obtener un valor real
+    # Convertimos el PID simbólico a una expresión
+    pid_tf_sym = design_pid_controller_symbolic(Kp, Ki, Kd)
+    
+    # Evaluamos la expresión simbólica en s=0 para obtener un valor real
+    pid_tf_real_at_s0 = pid_tf_sym.subs('s', 0)
+    
+    # Convertimos la expresión evaluada a un valor numérico real
+    k = float(pid_tf_real_at_s0)
+
     # Open loop function
     open_loop_tf = define_open_loop_system(plant_tf, pid_tf)
 
     def plot_root_locus(sys_tf, k):
         # Crear el gráfico del root locus con la cuadrícula activada
         plt.figure(figsize=(9, 7))
-        cplt = ct.root_locus_plot(sys_tf, grid=True, initial_gain= pid_tf)
+        cplt = ct.root_locus_plot(sys_tf, grid=True, initial_gain=k)
 
         # Configurar el título y etiquetas
         plt.title('Lugar de las Raíces del Sistema')
@@ -44,11 +38,6 @@ def root_locus():
         # Mostrar el gráfico en Streamlit
         st.pyplot(plt)  # Cambié plt.show() por st.pyplot()
 
-    plot_root_locus(open_loop_tf, pid_tf)
+    plot_root_locus(open_loop_tf, k)
 
-# Llamada a la función root_locus
 root_locus()
-
-if __name__ == "__main__":
-    # No es necesario agregar main() aquí si no hay otras funcionalidades principales
-    pass
