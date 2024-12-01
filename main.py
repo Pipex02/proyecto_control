@@ -13,7 +13,7 @@ p5 = st.Page("Root_Locus.py", title="Lugar de las raíces del sistema", icon=":m
 pg = st.navigation(
     {
         "": [p1],
-        "Herramientas": [p4, p2, p3],            
+        "Herramientas": [p4, p2, p3, p5],            
     }
 )
 pg.run()
