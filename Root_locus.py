@@ -37,9 +37,9 @@ denominador_pid = pid_tf.den[0]  # Denominador de PID
 open_loop_tf = define_open_loop_system(plant_tf_sym, pid_tf)
 
 # Crear el gráfico del root locus utilizando ct.root_locus
-plt.figure(figsize=(9, 7))
+fig, ax = plt.subplots(figsize=(9, 7))  # Crear la figura y los ejes correctamente
+
 # Generar los puntos del root locus
-ax = plt.subplots(figsize=(9, 7))
 ct.root_locus(open_loop_tf, ax=ax, grid=True, initial_gain=pid_tf)
 
 # Configurar el título y etiquetas
@@ -48,4 +48,4 @@ ax.set_xlabel('Parte Real')
 ax.set_ylabel('Parte Imaginaria')
 
 # Mostrar el gráfico en Streamlit
-st.pyplot(plt)
+st.pyplot(fig)
