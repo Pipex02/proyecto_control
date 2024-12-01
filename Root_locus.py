@@ -18,38 +18,34 @@ st.markdown(
     </style>
     """, unsafe_allow_html=True)
 
-def main():    
-    # Definir parámetros y calcular la planta
-    m, r, d, g, l, j, Kp, Ki, Kd = define_parameters()
-    numerador = calculate_plant_parameters(m, r, d, g, l)
-    plant_num = [numerador]        # Numerador de la planta
-    plant_den = [1, 0, 0]         # Denominador de la planta
+# Definir parámetros y calcular la planta
+m, r, d, g, l, j, Kp, Ki, Kd = define_parameters()
+numerador = calculate_plant_parameters(m, r, d, g, l)
+plant_num = [numerador]        # Numerador de la planta
+plant_den = [1, 0, 0]         # Denominador de la planta
 
-    # Definir la planta
-    plant_tf_sym = define_plant(plant_num, plant_den)  
-    # Diseñar el controlador PID
-    pid_tf = design_pid_controller(Kp, Ki, Kd)
-    
-    # Extraer los coeficientes numéricos del PID
-    numerador_pid = pid_tf.num[0]  # Numerador de PID
-    denominador_pid = pid_tf.den[0]  # Denominador de PID
-    
-    # Open loop function
-    open_loop_tf = define_open_loop_system(plant_tf_sym, pid_tf)
+# Definir la planta
+plant_tf_sym = define_plant(plant_num, plant_den)  
+# Diseñar el controlador PID
+pid_tf = design_pid_controller(Kp, Ki, Kd)
 
-    # Crear el gráfico del root locus utilizando ct.root_locus
-    plt.figure(figsize=(9, 7))
-    # Generar los puntos del root locus
-    _, ax = plt.subplots(figsize=(9, 7))
-    ct.root_locus(sys_tf, ax=ax, grid=True, initial_gain=pid_tf)
+# Extraer los coeficientes numéricos del PID
+numerador_pid = pid_tf.num[0]  # Numerador de PID
+denominador_pid = pid_tf.den[0]  # Denominador de PID
 
-    # Configurar el título y etiquetas
-    ax.set_title('Lugar de las Raíces del Sistema')
-    ax.set_xlabel('Parte Real')
-    ax.set_ylabel('Parte Imaginaria')
+# Open loop function
+open_loop_tf = define_open_loop_system(plant_tf_sym, pid_tf)
 
-    # Mostrar el gráfico en Streamlit
-    st.pyplot(plt)
+# Crear el gráfico del root locus utilizando ct.root_locus
+plt.figure(figsize=(9, 7))
+# Generar los puntos del root locus
+ax = plt.subplots(figsize=(9, 7))
+ct.root_locus(sys_tf, ax=ax, grid=True, initial_gain=pid_tf)
 
-if __name__ == "__main__":
-    main()
+# Configurar el título y etiquetas
+ax.set_title('Lugar de las Raíces del Sistema')
+ax.set_xlabel('Parte Real')
+ax.set_ylabel('Parte Imaginaria')
+
+# Mostrar el gráfico en Streamlit
+st.pyplot(plt)
