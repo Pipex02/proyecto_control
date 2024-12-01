@@ -20,25 +20,25 @@ def define_plant_numeric(num, den):
 # 3. Definir el controlador PID simbólicamente
 def design_pid_controller_symbolic(kp, ki, kd):
     s = sp.symbols('s')
-    num = kd * s + kp + ki / s
+    num = kd * s**2 + kp*s + ki
     den = s
     if ki == 0:
         num = kd * s + kp
-        den = s
+        den = 1
     if kd == 0:
-        num = ki / s + kp
+        num = kp * s + ki 
         den = s
     pid_tf_sym = num / den
     return pid_tf_sym
 
 # 4. Definir el controlador PID numéricamente
 def design_pid_controller_numeric(kp, ki, kd):
-    pid_tf_num = ct.TransferFunction([kd, kp, ki], [1, 0])
+    pid_tf = ct.TransferFunction([kd, kp, ki], [1, 0])
     if ki == 0:
-        pid_tf_num = ct.TransferFunction([kd, kp], [1])
+        pid_tf = ct.TransferFunction([kd, kp], [1])
     if kd == 0:
-        pid_tf_num = ct.TransferFunction([ki, kp], [1])
-    return pid_tf_num
+        pid_tf = ct.TransferFunction([kp, ki], [1, 0])
+    return pid_tf
 
 # Función para obtener la planta a partir de parámetros físicos
 def calculate_plant_parameters(m, r, d, g, l):
@@ -89,8 +89,8 @@ def design_pid_controller(Kp, Ki, Kd):
         num = [Kd, Kp]
         den = [1]
     if Kd == 0:
-        num = [Ki, Kp]
-        den = [1]
+        num = [Kp, Ki]
+        den = [1, 0]
     
     pid_tf = ct.TransferFunction(num, den)
     return pid_tf
@@ -249,6 +249,7 @@ def ecuaciones(m, r, d, g, l, Kp, Ki, Kd):
 
     # Calcular la función de transferencia de trayectoria directa (lazo abierto)
     direct_trajectory_tf_sym = plant_tf_sym * pid_tf_sym
+    direct_trajectory_tf_sym = sp.simplify(direct_trajectory_tf_sym)
 
     # Calcular la función de transferencia de lazo cerrado
     closed_loop_tf_sym = direct_trajectory_tf_sym / (1 + direct_trajectory_tf_sym)
@@ -273,5 +274,5 @@ def ecuaciones(m, r, d, g, l, Kp, Ki, Kd):
         st.latex(f'\\text{{Lazo abierto: }} {sp.latex(direct_trajectory_tf_sym)}')
 
     with col4:
-        st.subheader("FDT lazo cerrado:")
+        st.subheader("FDT lazo cerradoo:")
         st.latex(f'\\text{{Lazo cerrado: }} {sp.latex(closed_loop_tf_sym)}')
