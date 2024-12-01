@@ -19,6 +19,8 @@ st.markdown(
     </style>
     """, unsafe_allow_html=True)
 
+st.header("Respuestas al Impulso y Escalón del Sistema")
+        
 # Agregar un menú desplegable en la barra lateral
 menu = st.sidebar.selectbox("Selecciona una opción", ["Planta del sistema"])
 
@@ -30,8 +32,6 @@ if menu == "Planta del sistema":
 
     # === 5. Ejecutar en Streamlit ===
     def main():
-        
-        st.header("Respuestas al Impulso y Escalón del Sistema")
         
         # Opción para seleccionar entre 'Gráficas' o 'Ecuaciones'
         seleccion = st.radio("Selecciona lo que deseas ver:", ("Gráficas", "Ecuaciones"))
@@ -92,5 +92,5 @@ if menu == "Planta del sistema":
             st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
             ecuaciones(m, r, d, g, l, Kp, Ki, Kd)
 
-    if __name__ == "__main__":
-        main()
+    # Ejecutar directamente la función main cuando se cargue la página
+    main()
