@@ -162,8 +162,8 @@ def plot_responses(t_impulse_open, impulse_open, t_open, y_open_loop, t_impulse_
     plt.ylabel("Amplitud (cm)")
     plt.legend()
     plt.grid(True)
-    plt.ylim(-20, 20)  # Limitar el eje y de -20 a 20
-    plt.xlim(0, 6)  # Limitar el eje y de -20 a 20
+    plt.ylim(-10, 20)  # Limitar el eje y de -20 a 20
+    plt.xlim(0, 10)  # Limitar el eje y de -20 a 20
 
     # Respuesta al impulso (Lazo Cerrado)
     plt.subplot(2, 2, 2)  # 2 filas, 2 columnas, segundo gráfico
@@ -174,8 +174,8 @@ def plot_responses(t_impulse_open, impulse_open, t_open, y_open_loop, t_impulse_
     plt.ylabel("Amplitud (cm)")
     plt.legend()
     plt.grid(True)
-    plt.ylim(-20, 20)  # Limitar el eje y de -20 a 20
-    plt.xlim(0, 6)  # Limitar el eje y de -20 a 20
+    plt.ylim(-10, 15)  # Limitar el eje y de -20 a 20
+    plt.xlim(0, 15)  # Limitar el eje y de -20 a 20
 
     # Respuesta al escalón (Lazo Abierto)
     plt.subplot(2, 2, 3)  # 2 filas, 2 columnas, tercer gráfico
@@ -186,8 +186,8 @@ def plot_responses(t_impulse_open, impulse_open, t_open, y_open_loop, t_impulse_
     plt.ylabel("Amplitud (cm)")
     plt.legend()
     plt.grid(True)
-    plt.ylim(-20, 20)  # Limitar el eje y de -20 a 20
-    plt.xlim(0, 6)  # Limitar el eje y de -20 a 20
+    plt.ylim(-10, 20)  # Limitar el eje y de -20 a 20
+    plt.xlim(0, 10)  # Limitar el eje y de -20 a 20
 
     # Respuesta al escalón (Lazo Cerrado)
     plt.subplot(2, 2, 4)  # 2 filas, 2 columnas, cuarto gráfico
@@ -198,8 +198,8 @@ def plot_responses(t_impulse_open, impulse_open, t_open, y_open_loop, t_impulse_
     plt.ylabel("Amplitud (cm)")
     plt.legend()
     plt.grid(True)
-    plt.ylim(-20, 20)  # Limitar el eje y de -20 a 20
-    plt.xlim(0, 6)  # Limitar el eje y de -20 a 20
+    plt.ylim(-10, 25)  # Limitar el eje y de -20 a 20
+    plt.xlim(0, 15)  # Limitar el eje y de -20 a 20
 
     # Ajustar el espacio entre los subgráficos
     plt.tight_layout()  # Ajusta automáticamente los subgráficos para evitar superposición

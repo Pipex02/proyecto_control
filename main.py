@@ -18,4 +18,18 @@ pg = st.navigation(
 pg.run()
 
 st.logo("static/logo.png")
-st.sidebar.text("Control Automático 2024")
+
+
+st.sidebar.markdown('''
+    <style>
+        .sidebar-text {
+            font-size: 13px;
+            font-family: monospace;
+            font-weight: bold;
+            padding-top: 10px;
+        }
+    </style>
+    <div class="sidebar-text">
+        Control Automático  | Nov 2024
+    </div>
+''', unsafe_allow_html=True)
