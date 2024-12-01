@@ -37,39 +37,38 @@ def main():
         
         # Definir sistema en lazo cerrado
         closed_loop_tf = define_closed_loop_system(open_loop_tf)
-
+        
         def plot_root_locus(sys_tf):
-            # Crear el sistema en lazo abierto
-            sys_open_loop = ct.feedback(sys_tf, 1)
-
-            # Crear el gráfico del lugar de las raíces usando root_locus de control
+            # Crear el sistema en lazo cerrado con retroalimentación unitaria
+            sys_cl = ct.feedback(sys_tf, 1)
+            
+            # Crear el gráfico del lugar de las raíces (Root Locus)
             plt.figure(figsize=(9, 7))
-            # Generar el lugar de las raíces
-            ct.root_locus(sys_open_loop, print_array=True, grid=True)
-
-            # Configurar título y etiquetas
+            # Gráfico del lugar de las raíces
+            ct.root_locus(sys_cl, grid=True)  # Elimino el argumento print_array=True
+            
+            # Configurar el título y etiquetas
             plt.title('Lugar de las Raíces del Sistema')
             plt.xlabel('Parte Real')
             plt.ylabel('Parte Imaginaria')
             
-            # Etiquetar los polos y ceros
-            poles = sys_open_loop.pole()
-            zeros = sys_open_loop.zero()
-            for p in poles:
-                plt.plot(np.real(p), np.imag(p), 'rx', label='Polos')  # Polos marcados con 'x'
-            for z in zeros:
-                plt.plot(np.real(z), np.imag(z), 'bo', label='Ceros')  # Ceros marcados con 'o'
-
-            # Leyenda
+            # Graficar los polos y ceros
+            poles = np.array(ct.pole(sys_cl))
+            zeros = np.array(ct.zero(sys_cl))
+            plt.scatter(np.real(poles), np.imag(poles), color='red', label='Polos', marker='x')
+            plt.scatter(np.real(zeros), np.imag(zeros), color='blue', label='Ceros', marker='o')
+            
+            # Añadir leyenda
             plt.legend()
-
+            
             # Mostrar el gráfico en Streamlit
             st.pyplot(plt)
         
         # Mostrar la gráfica y los polos en lazo cerrado
         plot_root_locus(open_loop_tf)
-
-        # Mostrar información de los polos del sistema en lazo cerrado
+        
+        # Mostrar información sobre los polos
+        st.write("Análisis de los polos en el lazo cerrado:")
         ct.damp(closed_loop_tf, doprint=True)
 
     # Llamada a la función principal
