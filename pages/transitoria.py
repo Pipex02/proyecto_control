@@ -2,17 +2,18 @@ import streamlit as st
 import numpy as np
 import control as ct
 import os
+import plotly.graph_objects as go
+
 
 # Importar las funciones definidas
-from define_planta import define_parameters, design_pid_controller_numeric
-from define_planta import define_system2
+from define_planta import define_parameters, define_system2, calculate_step_response_parameters
 
 # === Establecer el estilo de la página ===
 st.markdown(
     """
     <style>
     .block-container {
-        max-width: 72%;
+        max-width: 90%;
         margin: auto;
         overflow: auto;
     }
@@ -48,63 +49,74 @@ if planta_seleccionada == "Planta variable":
             col1, col2, col3 = st.columns(3)
 
             with col1:
-                m = st.number_input("Masa de la bola [kg]", value=1.0, min_value=0.1, step=0.05)
+                m = st.number_input("Masa de la bola [kg]", value=1.0, min_value=0.01, step=0.05)
                 r = st.number_input("Radio de la bola [m]", value=0.1, min_value=0.01, step=0.05)
                 
             with col2:
                 g = st.number_input("Gravedad [m/s²]", value=9.81, min_value=0.1, step=0.05)
-                l = st.number_input("Longitud [m]", value=1.0, min_value=0.1, step=0.1)
+                l = st.number_input("Longitud [m]", value=1.0, min_value=0.1, step=0.01)
                 
             with col3:
-                d = st.number_input("Desplazamiento [m]", value=1.0, min_value=0.1, step=0.1)
+                d = st.number_input("Desplazamiento [m]", value=1.0, min_value=0.01, step=0.02)
                 
-col1, col2, col3, col4 = st.columns(4)
+col1, col2, col3, col4 = st.columns([5, 5, 5, 3])
 
-with col1:  
-    Kp = st.number_input("Proporcional (Kp)", value=10.0, step=1.0)
-with col2:
-    Ki = st.number_input("Integral (Ki)", value=1.0, step=1.0)
-with col3:
-    Kd = st.number_input("Derivativo (Kd)", value=1.0, step=1.0)
-with col4:
+
+col1, col2, = st.columns([1, 5])
+with col1:
+    t = st.number_input("Tiempo de simulación", value=15.0, step=1.0)
     a_x = st.number_input("Amplitud del escalón", value=1.0, step=1.0)
+    Kp = st.number_input("Proporcional (Kp)", value=10.0, step=1.0)
+    Ki = st.number_input("Integral (Ki)", value=1.0, step=1.0)
+    Kd = st.number_input("Derivativo (Kd)", value=1.0, step=0.25)
 
+    # Aquí comienza el cálculo de la respuesta transitoria al escalón
 
-# Aquí comienza el cálculo de la respuesta transitoria al escalón
+    # Definir las funciones de transferencia del sistema
+    plant_tf_sym, plant_tf_num, pid_tf_sym, pid_tf_num, pid_latex, plant_latex = define_system2(m, r, d, g, l, Kp, Ki, Kd)
+    open_loop_tf = plant_tf_num * pid_tf_num
+    closed_loop_tf = ct.feedback(open_loop_tf, 1)
+    tr, ts, mp, tp, pk, yss, ess, t_step, y_closed_loop = calculate_step_response_parameters(closed_loop_tf, a_x)
+    
+with col2:
+    # Crear la gráfica de Plotly
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=t_step,
+        y=y_closed_loop,
+        mode='lines',
+        name='Respuesta al escalón',
+    ))
 
-# Definir las funciones de transferencia del sistema
-plant_tf_sym, plant_tf_num, pid_tf_sym, pid_tf_num, pid_latex, plant_latex = define_system2(m, r, d, g, l, Kp, Ki, Kd)
-
-st.latex(pid_latex)
-st.latex(plant_latex)
-
-closed_loop_tf = ct.TransferFunction([Kp], [m, r, d, g, l])  # Aquí debes reemplazar por tu transferencia
-
-# 2. Simular la respuesta al escalón con escalamiento y valor inicial de 20
-t = np.linspace(0, 10, 500)
-t_step, y_closed_loop = ct.step_response(closed_loop_tf, T=t)
-
-# Escalar la respuesta y el escalón
-y_closed_loop = a_x * y_closed_loop + 20  # Escalar y ajustar el valor inicial a 20
-
-# 3. Calcular los parámetros transitorios
-info = ct.step_info(closed_loop_tf)
-
-tr = info['RiseTime']        # Tiempo de subida
-ts = info['SettlingTime']    # Tiempo de asentamiento
-mp = info['Overshoot']       # Sobresalto (overshoot)
-tp = info['PeakTime']        # Tiempo pico
-pk = info['Peak']            # Valor pico
-yss = y_closed_loop[-1]      # Valor en estado estacionario
-ess = a_x - (yss - 20)         # Error en estado estacionario considerando el desplazamiento
+    # Configurar la apariencia de la gráfica
+    fig.update_layout(
+        title='Respuesta al escalón',
+        xaxis_title='Tiempo (segundos)',
+        yaxis_title='Amplitud',
+        width=720,
+        height=480,
+        xaxis=dict(range=[0, t]),  # Establece el rango del eje X
+        #yaxis=dict(range=[20, 40]),  # Establece el rango del eje Y
+    
+    )
+    # Mostrar la gráfica en Streamlit
+    st.plotly_chart(fig) 
+col1, col2 = st.columns(2)
+with col1:
+    st.latex(pid_latex)
+with col2:
+    st.latex(plant_latex)
+     
 
 # Mostrar los parámetros transitorios en Streamlit
 st.subheader("Parámetros de la Respuesta Transitoria")
-st.write(f"Tiempo de subida (tr): {tr} segundos")
-st.write(f"Tiempo de asentamiento (ts): {ts} segundos")
-st.write(f"Sobresalto (mp): {mp}%")
-st.write(f"Tiempo pico (tp): {tp} segundos")
-st.write(f"Valor pico (pk): {pk}")
-st.write(f"Valor en estado estacionario (yss): {yss}")
-st.write(f"Error en estado estacionario (ess): {ess}")
+st.write(f"Tiempo de subida (tr): {tr:.2f} segundos")
+st.write(f"Tiempo de asentamiento (ts): {ts:.2f} segundos")
+st.write(f"Sobresalto (mp): {mp:.2f}%")
+st.write(f"Tiempo pico (tp): {tp:.2f} segundos")
+st.write(f"Valor pico (pk): {pk:.2f}")
+st.write(f"Valor en estado estacionario (yss): {yss:.2f}")
+st.write(f"Error en estado estacionario (ess): {ess:.2f}")
+
+
 

@@ -114,6 +114,27 @@ def print_plant_tf_latex(m, r, d, g, l):
     numerador = calculate_plant_parameters(m, r, d, g, l)
     return f"Planta : G_2 = \\frac{{{numerador}}}{{s^2}}"
 
+#9. Calcular los parametros de respuesta al impulso de amplitud x
+def calculate_step_response_parameters(closed_loop_tf, x):
+    # Define the time vector
+    t = np.linspace(0, 40, 2000)
+
+    # Calculate the step response
+    t_step, y_closed_loop = ct.step_response(closed_loop_tf, T=t)
+    y_closed_loop = x * y_closed_loop + 20
+
+    # Calculate the step response parameters
+    info = ct.step_info(y_closed_loop, t_step, SettlingTimeThreshold=0.02)
+    tr = info['RiseTime']
+    ts = info['SettlingTime']
+    mp = info['Overshoot']
+    tp = info['PeakTime']
+    pk = info['Peak']
+    yss = y_closed_loop[-1]
+    ess = x - (yss - 20)
+
+    return tr, ts, mp, tp, pk, yss, ess, t_step, y_closed_loop    
+
 # === 1. Definir la planta simbólicamente ===
 def translate_sym(m, r, d, g, l, Kp, Ki, Kd):
     m=m
