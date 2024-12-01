@@ -51,8 +51,9 @@ def main():
             plt.title('Lugar de las Raíces del Sistema')
             plt.xlabel('Parte Real')
             plt.ylabel('Parte Imaginaria')
-            # Mostrar el gráfico
-            plt.show()
+
+            # Mostrar el gráfico en Streamlit
+            st.pyplot(plt)
 
         plot_root_locus(open_loop_tf, k)
     
