@@ -40,7 +40,7 @@ open_loop_tf = define_open_loop_system(plant_tf_sym, pid_tf)
 plt.figure(figsize=(9, 7))
 # Generar los puntos del root locus
 ax = plt.subplots(figsize=(9, 7))
-ct.root_locus(sys_tf, ax=ax, grid=True, initial_gain=pid_tf)
+ct.root_locus(open_loop_tf, ax=ax, grid=True, initial_gain=pid_tf)
 
 # Configurar el título y etiquetas
 ax.set_title('Lugar de las Raíces del Sistema')
