@@ -49,17 +49,15 @@ def design_pid_controller_numeric(kp, ki, kd):
     pid_tf = ct.TransferFunction([kd, kp, ki], [1, 0])
     if ki == 0:
         pid_tf = ct.TransferFunction([kd, kp], [1])
-    if kd == 0:
-        pid_tf = ct.TransferFunction([kp, ki], [1, 0])
     return pid_tf
 
-# Función para obtener la planta a partir de parámetros físicos
+# 5. Función para obtener la planta a partir de parámetros físicos
 def calculate_plant_parameters(m, r, d, g, l):
     j = (2/5) * m * r * r  # Momento de inercia
     numerador = (m * g * d) / (l * ((j / (r * r)) + m))
     return round(numerador, 3)  # Redondear el numerador a 3 decimales
 
-# Función para definir la planta con parámetros físicos y PID
+# 6. Función para definir la planta con parámetros físicos y PID
 def define_system(m, r, d, g, l, Kp, Ki, Kd):
     # Calcula los parámetros físicos de la planta
     numerador = calculate_plant_parameters(m, r, d, g, l)
@@ -76,6 +74,45 @@ def define_system(m, r, d, g, l, Kp, Ki, Kd):
     pid_tf_num = design_pid_controller_numeric(Kp, Ki, Kd)
 
     return plant_tf_sym, plant_tf_num, pid_tf_sym, pid_tf_num
+
+# 6.2 Función para definir la planta con parámetros físicos y PID
+def define_system2(m, r, d, g, l, Kp, Ki, Kd):
+    # Calcula los parámetros físicos de la planta
+    numerador = calculate_plant_parameters(m, r, d, g, l)
+
+    # Definir la planta simbólica y numérica
+    plant_num = [numerador]        # Numerador de la planta
+    plant_den = [1, 0, 0]         # Denominador de la planta
+
+    plant_tf_sym = define_plant_symbolic(plant_num, plant_den)
+    plant_tf_num = define_plant_numeric(plant_num, plant_den)
+
+    # Definir el controlador PID simbólico y numérico
+    pid_tf_sym = design_pid_controller_symbolic(Kp, Ki, Kd)
+    pid_tf_num = design_pid_controller_numeric(Kp, Ki, Kd)
+
+    # Generate LaTeX strings for PID and plant transfer functions
+    pid_latex = print_pid_tf_latex(Kp, Ki, Kd)
+    plant_latex = print_plant_tf_latex(m, r, d, g, l)
+
+    return plant_tf_sym, plant_tf_num, pid_tf_sym, pid_tf_num, pid_latex, plant_latex
+#7. Imprimir funcion de transferencia del controlador
+def print_pid_tf_latex(kp, ki, kd):
+    if ki == 0:
+        if kd == 0:
+            return f"PID : G_1 = {kp}"
+        else:
+            return f"PID : G_1 = {kd}s + {kp}"
+    else:
+        if kd == 0:
+            return f"PID : G_1 = \\frac{{{kp}s + {ki}}}{{s}}"
+        else:
+            return f"PID : G_1 = \\frac{{{kd}s^2 + {kp}s + {ki}}}{{s}}"
+
+#8. Imprimir funcion de transferencia del controlador
+def print_plant_tf_latex(m, r, d, g, l):
+    numerador = calculate_plant_parameters(m, r, d, g, l)
+    return f"Planta : G_2 = \\frac{{{numerador}}}{{s^2}}"
 
 # === 1. Definir la planta simbólicamente ===
 def translate_sym(m, r, d, g, l, Kp, Ki, Kd):
