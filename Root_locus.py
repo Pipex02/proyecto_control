@@ -2,14 +2,13 @@ import sympy as sp
 
 # Asumiendo que 'design_pid_controller_symbolic' ya está definida:
 
-def root_locus():
-    m, r, d, g, l, j, Kp, Ki, Kd = define_parameters()
-    j = (2/5)*m*r*r  # Momento de inercia
+def root_locus(m, r, d, g, l, j, Kp, Ki, Kd):
+    
+    numerador=calculate_plant_parameters(m, r, d, g, l)
+    plant_num = [numerador]        # Numerador de la planta
+    plant_den = [1, 0, 0]         # Denominador de la planta
 
-    # Fórmula para el numerador
-    numerador = (m * g * d) / (l * ((j / (r * r)) + m))
-
-    plant_tf = define_plant([numerador], [1, 0, 0])
+    plant_tf_sym = define_plant_symbolic(plant_num, plant_den)
     pid_tf = design_pid_controller(Kp, Ki, Kd)
 
     # Evaluar pid_tf para obtener un valor real
@@ -40,4 +39,5 @@ def root_locus():
 
     plot_root_locus(open_loop_tf, k)
 
-root_locus()
+m, r, d, g, l, j, Kp, Ki, Kd = define_parameters()
+root_locus(m, r, d, g, l, j, Kp, Ki, Kd)
