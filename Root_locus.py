@@ -34,7 +34,7 @@ def root_locus():
     def plot_root_locus(sys_tf, k):
         # Crear el gráfico del root locus con la cuadrícula activada
         plt.figure(figsize=(9, 7))
-        cplt = ct.root_locus_plot(sys_tf, grid=True, initial_gain=k )
+        cplt = ct.root_locus_plot(sys_tf, grid=True, initial_gain= pid_tf)
 
         # Configurar el título y etiquetas
         plt.title('Lugar de las Raíces del Sistema')
