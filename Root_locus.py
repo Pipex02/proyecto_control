@@ -1,43 +1,62 @@
-import sympy as sp
+import control as ct
+import numpy as np
+import matplotlib.pyplot as plt
+import streamlit as st
+from define_planta import define_parameters, define_plant, design_pid_controller, define_open_loop_system, calculate_plant_parameters
 
-# Asumiendo que 'design_pid_controller_symbolic' ya está definida:
-
-def root_locus(m, r, d, g, l, j, Kp, Ki, Kd):
+# === Establecer el estilo de la página ===
+st.markdown(
+    """
+    <style>
+    /* Establecer el ancho máximo de la página al 72% del ancho total */
+    .block-container {
+        max-width: 72%;
+        margin: auto;
+        overflow: auto;  /* Permite desplazamiento vertical si el contenido excede el área */
+        /* Reducir el margen superior para que haya menos espacio encima de la página */
     
-    numerador=calculate_plant_parameters(m, r, d, g, l)
-    plant_num = [numerador]        # Numerador de la planta
-    plant_den = [1, 0, 0]         # Denominador de la planta
+    </style>
+    """, unsafe_allow_html=True)
 
-    plant_tf_sym = define_plant_symbolic(plant_num, plant_den)
-    pid_tf = design_pid_controller(Kp, Ki, Kd)
-
-    # Evaluar pid_tf para obtener un valor real
-    # Convertimos el PID simbólico a una expresión
-    pid_tf_sym = design_pid_controller_symbolic(Kp, Ki, Kd)
+def main():
     
-    # Evaluamos la expresión simbólica en s=0 para obtener un valor real
-    pid_tf_real_at_s0 = pid_tf_sym.subs('s', 0)
+    def root_locus():
+        # Definir parámetros y calcular la planta
+        m, r, d, g, l, j, Kp, Ki, Kd = define_parameters()
+        numerador = calculate_plant_parameters(m, r, d, g, l)
+        plant_num = [numerador]        # Numerador de la planta
+        plant_den = [1, 0, 0]         # Denominador de la planta
+
+        # Definir la planta
+        plant_tf_sym = define_plant(plant_num, plant_den)  
+        # Diseñar el controlador PID
+        pid_tf = design_pid_controller(Kp, Ki, Kd)
+        
+        # Extraer los coeficientes numéricos del PID
+        numerador_pid = pid_tf.num[0]  # Numerador de PID
+        denominador_pid = pid_tf.den[0]  # Denominador de PID
+        
+        # Open loop function
+        open_loop_tf = define_open_loop_system(plant_tf_sym, pid_tf)
+        
+        # Usar el PID como un valor para k (ganancia inicial)
+        k = pid_tf
+
+        def plot_root_locus(sys_tf, k):
+            # Crear el gráfico del root locus con la cuadrícula activada
+            plt.figure(figsize=(9, 7))
+            cplt = ct.root_locus_plot(sys_tf, grid=True, initial_gain=k)
+
+            # Configurar el título y etiquetas
+            plt.title('Lugar de las Raíces del Sistema')
+            plt.xlabel('Parte Real')
+            plt.ylabel('Parte Imaginaria')
+            # Mostrar el gráfico
+            plt.show()
+
+        plot_root_locus(open_loop_tf, k)
     
-    # Convertimos la expresión evaluada a un valor numérico real
-    k = float(pid_tf_real_at_s0)
-
-    # Open loop function
-    open_loop_tf = define_open_loop_system(plant_tf, pid_tf)
-
-    def plot_root_locus(sys_tf, k):
-        # Crear el gráfico del root locus con la cuadrícula activada
-        plt.figure(figsize=(9, 7))
-        cplt = ct.root_locus_plot(sys_tf, grid=True, initial_gain=k)
-
-        # Configurar el título y etiquetas
-        plt.title('Lugar de las Raíces del Sistema')
-        plt.xlabel('Parte Real')
-        plt.ylabel('Parte Imaginaria')
-
-        # Mostrar el gráfico en Streamlit
-        st.pyplot(plt)  # Cambié plt.show() por st.pyplot()
-
-    plot_root_locus(open_loop_tf, k)
-
-m, r, d, g, l, j, Kp, Ki, Kd = define_parameters()
-root_locus(m, r, d, g, l, j, Kp, Ki, Kd)
+    root_locus()
+        
+if __name__ == "__main__":
+    main()
