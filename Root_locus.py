@@ -43,14 +43,16 @@ def main():
         k = pid_tf
 
         def plot_root_locus(sys_tf, k):
-            # Crear el gráfico del root locus con la cuadrícula activada
+            # Crear el gráfico del root locus utilizando ct.root_locus
             plt.figure(figsize=(9, 7))
-            cplt = ct.root_locus_plot(sys_tf, grid=True, initial_gain=k)
+            # Generar los puntos del root locus
+            _, ax = plt.subplots(figsize=(9, 7))
+            ct.root_locus(sys_tf, ax=ax, grid=True)
 
             # Configurar el título y etiquetas
-            plt.title('Lugar de las Raíces del Sistema')
-            plt.xlabel('Parte Real')
-            plt.ylabel('Parte Imaginaria')
+            ax.set_title('Lugar de las Raíces del Sistema')
+            ax.set_xlabel('Parte Real')
+            ax.set_ylabel('Parte Imaginaria')
 
             # Mostrar el gráfico en Streamlit
             st.pyplot(plt)
