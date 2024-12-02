@@ -5,6 +5,7 @@ import seaborn as sns
 import streamlit as st
 from define_frecuencia import Respuesta_frecuencia_abierto  # Asegúrate de tener la función root_locus definida en el archivo 'Root_base.py'
 from Root_base_nondefine import non_root_locus  # Asegúrate de tener la función root_locus definida en el archivo 'Root_base.py'
+from define_planta import define_parameters
 
 # === Establecer el estilo de la página ===
 st.markdown(
@@ -27,6 +28,7 @@ def main():
         
     # Parámetros para la Planta real
     if planta_seleccionada == "Planta real":
+        m, r, d, g, l, j, Kp, Ki, Kd = define_parameters()
         Respuesta_frecuencia_abierto()
         
     
