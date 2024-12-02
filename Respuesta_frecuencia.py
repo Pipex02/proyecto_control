@@ -21,6 +21,7 @@ st.markdown(
     """, unsafe_allow_html=True)
 
 st.header("Respuestas en frecuencia del Sistema")
+planta_seleccionada = st.selectbox("Selecciona el tipo de planta", ["Planta real", "Planta variable"])
 
 def main():
         
