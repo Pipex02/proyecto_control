@@ -2,6 +2,7 @@ import streamlit as st
 
 
 # iconos: https://fonts.google.com/icons
+#color: #00fe81,https://www.w3schools.com/colors/colors_hexadecimal.asp
 # Definir todas las páginas
 p1 = st.Page("pages/main_page.py", title="Home", icon=":material/home:", default=True)
 p2 = st.Page("pages/tiempo_real.py", title="Sistema real", icon=":material/monitoring:")
@@ -19,4 +20,18 @@ pg = st.navigation(
 pg.run()
 
 st.logo("static/logo.png")
-st.sidebar.text("Control Automático 2024")
+
+
+st.sidebar.markdown('''
+    <style>
+        .sidebar-text {
+            font-size: 13px;
+            font-family: monospace;
+            font-weight: bold;
+            padding-top: 10px;
+        }
+    </style>
+    <div class="sidebar-text">
+        Control Automático  | Nov 2024
+    </div>
+''', unsafe_allow_html=True)
