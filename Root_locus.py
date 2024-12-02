@@ -56,9 +56,55 @@ def main():
         figure_width = st.slider("Ancho del gráfico (en pulgadas)", min_value=8, max_value=10, value=10)  # Aumentar el tamaño de la figura
         figure_height = st.slider("Alto del gráfico (en pulgadas)", min_value=8, max_value=10, value=9)
         dpi = st.slider("Resolución del gráfico (DPI)", min_value=200, max_value=300, value=290)
+    planta_seleccionada = st.selectbox("Selecciona el tipo de planta", ["Planta real", "Planta variable"])
+    if planta_seleccionada == "Planta real":
+        root_locus(figure_width, figure_height, dpi)
+    if planta_seleccionada == "Planta variable":
+        with st.expander("Modificar parámetros del sistema", expanded=False):  # expanded=False para que esté cerrado
+                # Subdividir los parámetros en 3 columnas
+                col1, col2, col3 = st.columns(3)
 
-    # Llamada a la función root_locus con los parámetros de tamaño y resolución
-    root_locus(figure_width, figure_height, dpi)
+                with col1:
+                    m = st.number_input("Masa de la bola (Kg)", value=0.0464)
+                    r = st.number_input("Radio de la bola (m)", value=0.02)
+                    d = st.number_input("Desplazamiento del brazo (m)", value=0.04)
 
+                with col2:
+                    g = st.number_input("Gravedad (m/s^2)", value=9.8)
+                    l = st.number_input("Longitud de la viga (m)", value=0.37)
+
+                with col3:
+                    Kp = st.number_input("Ganancia proporcional (Kp)", value=26)
+                    Ki = st.number_input("Ganancia integral (Ki)", value=13)
+                    Kd = st.number_input("Ganancia derivativa (Kd)", value=30)
+
+        # Opción para mostrar u ocultar los parámetros
+        mostrar_parametros = st.checkbox("Mostrar parámetros")
+
+        # Si el checkbox está marcado, mostramos los parámetros en 3 columnas
+        if mostrar_parametros:
+            st.subheader("Parámetros ingresados:")
+            
+            # Crear tres columnas para los parámetros
+            col1, col2, col3 = st.columns(3)
+
+            with col1:
+                st.write(f"Masa de la bola: {m} Kg")
+                st.write(f"Radio de la bola: {r} m")
+                st.write(f"Desplazamiento del brazo: {d} m")
+            
+            with col2:
+                st.write(f"Gravedad: {g} m/s²")
+                st.write(f"Longitud de la viga: {l} m")
+                st.write(f"Ganancia proporcional (Kp): {Kp}")
+
+            with col3:
+                st.write(f"Ganancia integral (Ki): {Ki}")
+                st.write(f"Ganancia derivativa (Kd): {Kd}")
+        
+        non_root_locus(figure_width, figure_height, dpi, m, r, d, g, l, Kp, Ki, Kd)
+        
+
+    
 if __name__ == "__main__":
     main()

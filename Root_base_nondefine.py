@@ -7,9 +7,9 @@ from non_define_planta import define_plant, design_pid_controller, define_open_l
 
 sns.set(style="whitegrid")  # Aplicar un fondo limpio con líneas de cuadrícula suaves
 
-def root_locus(figure_width, figure_height, dpi):
+def non_root_locus(figure_width, figure_height, dpi, m, r, d, g, l, Kp, Ki, Kd):
     # Definir parámetros y calcular la planta
-    m, r, d, g, l, j, Kp, Ki, Kd = define_parameters()
+    
     numerador = calculate_plant_parameters(m, r, d, g, l)
     plant_num = [numerador]        # Numerador de la planta
     plant_den = [1, 0, 0]         # Denominador de la planta
