@@ -48,14 +48,30 @@ def plot_root_locus(sys_tf, width, height, dpi):
 
     ct.root_locus(sys_open_loop, grid=True)
 
+    # Obtener polos del sistema
+    poles = ct.poles(sys_open_loop)
+    zeros = ct.zeros(sys_open_loop)
+
+    # Calcular el valor más pequeño en la parte real de los polos
+    real_poles = np.real(poles)
+    min_real_pole = np.min(real_poles)  # Polo más pequeño en la parte real
+    max_real_pole = np.max(real_poles)
+    
+    real_zeros =np.real(zeros)
+    min_real_zero = np.min(real_zeros)
+    max_real_zero = np.max(real_zeros)
+    
+    # Ajustar límites de los ejes
+    plt.xlim(min_real_pole - 7, max_real_pole + 7)  # Ajustar el rango del eje x según el polo más pequeño y un valor fijo
+    plt.ylim(min_real_zero - 7, max_real_zero + 7)  # Ajustar el rango de la parte imaginaria (puedes modificar este valor también)
+
     # Configurar título y etiquetas
     plt.title('Lugar de las Raíces del Sistema', fontsize=35)
     plt.xlabel('Parte Real', fontsize=14)
     plt.ylabel('Parte Imaginaria', fontsize=14)
     
     # Etiquetar los polos y ceros
-    poles = ct.poles(sys_open_loop)  # Cambiado a ct.poles()
-    zeros = ct.zeros(sys_open_loop)  # Cambiado a ct.zeros()
+    zeros = ct.zeros(sys_open_loop)
     for p in poles:
         plt.plot(np.real(p), np.imag(p), 'rx', label='Polos', markersize=17, markeredgewidth=5)  # Aumentar el tamaño de los marcadores y grosor
     for z in zeros:
@@ -67,4 +83,3 @@ def plot_root_locus(sys_tf, width, height, dpi):
 
     # Mostrar el gráfico en Streamlit
     st.pyplot(plt)
-

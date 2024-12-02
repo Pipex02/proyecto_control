@@ -19,3 +19,5 @@ def Respuesta_frecuencia_abierto():
     
     # Definir sistema en lazo abierto
     open_loop_tf = define_open_loop_system(plant_tf_sym, pid_tf)
+    
+    

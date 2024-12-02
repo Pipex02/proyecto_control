@@ -17,6 +17,7 @@ st.markdown(
         margin: auto;
         padding-top: none;
         margin-top: 0px !important;
+        max-height: 100%;
     }
 
     /* Estilo del título de la página */
@@ -54,9 +55,9 @@ st.title("Análisis del Lugar de las Raíces del Sistema de Control")
 # Caja desplegable con los controles deslizantes
 with st.expander("Configurar gráfico", expanded=False):  # Se puede poner expanded=True para que esté expandido por defecto
     # Configuración de la figura
-    figure_width = st.slider("Ancho del gráfico (en pulgadas)", min_value=4, max_value=4, value=4)  # Aumentar el tamaño de la figura
-    figure_height = st.slider("Alto del gráfico (en pulgadas)", min_value=8, max_value=8, value=8)
-    dpi = st.slider("Resolución del gráfico (DPI)", min_value=100, max_value=100, value=100)
+    figure_width = st.slider("Ancho del gráfico (en pulgadas)", min_value=8, max_value=12, value=12)  # Aumentar el tamaño de la figura
+    figure_height = st.slider("Alto del gráfico (en pulgadas)", min_value=14, max_value=18, value=16)
+    dpi = st.slider("Resolución del gráfico (DPI)", min_value=80, max_value=120, value=100)
 
 planta_seleccionada = st.selectbox("Selecciona el tipo de planta", ["Planta real", "Planta variable"])
 
