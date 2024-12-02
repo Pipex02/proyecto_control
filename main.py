@@ -15,7 +15,7 @@ p6 = st.Page("Respuesta_frecuencia.py", title="Respuesta en frecuencia", icon=":
 pg = st.navigation(
     {
         "": [p1],
-        "Herramientas": [p4, p2, p3, p5],            
+        "Herramientas": [p4, p2, p3, p5, p6],            
     }
 )
 pg.run()
