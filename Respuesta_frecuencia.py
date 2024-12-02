@@ -27,6 +27,7 @@ def main():
         
     # Parámetros para la Planta real
     if planta_seleccionada == "Planta real":
+        m, r, d, g, l, j, Kp, Ki, Kd = define_parameters()
         Respuesta_frecuencia_abierto()
         
     
