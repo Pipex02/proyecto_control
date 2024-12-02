@@ -3,7 +3,7 @@ import numpy as np
 import control as ct
 import os
 import plotly.graph_objects as go
-
+import pandas as pd
 
 # Importar las funciones definidas
 from define_planta import define_parameters, define_system2, calculate_step_response_parameters
@@ -26,7 +26,7 @@ st.title("Análisis de Respuesta Transitoria")
 # Título de la página
 st.subheader("Respuesta al Escalón del Sistema")
 
-st.image(os.path.join(os.getcwd(), "static", "transitoria.png"), caption="Step response", width=390)
+#st.image(os.path.join(os.getcwd(), "static", "transitoria.png"), caption="Step response", width=390)
 
 col1, col2 = st.columns([2, 5])
 
@@ -62,14 +62,18 @@ if planta_seleccionada == "Planta variable":
 col1, col2, col3, col4 = st.columns([5, 5, 5, 3])
 
 
-col1, col2, = st.columns([1, 5])
+col1, col2   = st.columns([2, 5], vertical_alignment="top")
 with col1:
-    t = st.number_input("Tiempo de simulación", value=15.0, step=1.0)
-    a_x = st.number_input("Amplitud del escalón", value=1.0, step=1.0)
-    Kp = st.number_input("Proporcional (Kp)", value=10.0, step=1.0)
-    Ki = st.number_input("Integral (Ki)", value=1.0, step=1.0)
-    Kd = st.number_input("Derivativo (Kd)", value=1.0, step=0.25)
+    col3, col4 = st.columns(2)
+    with col3:    
+        a_x = st.number_input("Amplitud del escalón", value=1.0, step=1.0)
+        Kp = st.number_input("Proporcional (Kp)", value=10.0, step=1.0)
+        Kd = st.number_input("Derivativo (Kd)", value=1.0, step=0.25)
 
+    with col4:
+        t = st.number_input("Tiempo", value=15.0, step=1.0)
+        Ki = st.number_input("Integral (Ki)", value=1.0, step=1.0)
+        
     # Aquí comienza el cálculo de la respuesta transitoria al escalón
 
     # Definir las funciones de transferencia del sistema
@@ -77,7 +81,18 @@ with col1:
     open_loop_tf = plant_tf_num * pid_tf_num
     closed_loop_tf = ct.feedback(open_loop_tf, 1)
     tr, ts, mp, tp, pk, yss, ess, t_step, y_closed_loop = calculate_step_response_parameters(closed_loop_tf, a_x)
-    
+    parameters = {
+        'Tiempo de subida (tr)': tr,
+        'Tiempo de asentamiento (ts)': ts,
+        'Sobresalto (mp)': mp,
+        'Tiempo pico (tp)': tp,
+        'Valor pico (pk)': pk,
+        'Valor en estado estacionario (yss)': yss,
+        'Error en estado estacionario (ess)': ess
+    }
+
+    st.table(pd.DataFrame(list(parameters.items()), columns=['Parameter', 'Value']))
+
 with col2:
     # Crear la gráfica de Plotly
     fig = go.Figure()
@@ -86,6 +101,7 @@ with col2:
         y=y_closed_loop,
         mode='lines',
         name='Respuesta al escalón',
+        line=dict(color='rgb(0, 254, 129)', width=3),
     ))
 
     # Configurar la apariencia de la gráfica
@@ -101,22 +117,60 @@ with col2:
     )
     # Mostrar la gráfica en Streamlit
     st.plotly_chart(fig) 
+
 col1, col2 = st.columns(2)
+
 with col1:
     st.latex(pid_latex)
 with col2:
     st.latex(plant_latex)
      
+col1, col2, col3 = st.columns([2, 4, 2])
+with col2:
+    # Create a dictionary to store the parameters
+    st.markdown(
+        """
+        <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #333;
+            background-color: #222;
+            color: #fff;
+            font-size: 12px;
+        }
 
-# Mostrar los parámetros transitorios en Streamlit
-st.subheader("Parámetros de la Respuesta Transitoria")
-st.write(f"Tiempo de subida (tr): {tr:.2f} segundos")
-st.write(f"Tiempo de asentamiento (ts): {ts:.2f} segundos")
-st.write(f"Sobresalto (mp): {mp:.2f}%")
-st.write(f"Tiempo pico (tp): {tp:.2f} segundos")
-st.write(f"Valor pico (pk): {pk:.2f}")
-st.write(f"Valor en estado estacionario (yss): {yss:.2f}")
-st.write(f"Error en estado estacionario (ess): {ess:.2f}")
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #333;
+        }
 
+        th {
+            background-color: #333;
+        }
 
+        tr:nth-child(even) {
+            background-color: #444;
+        }
 
+        tr:hover {
+            background-color: #555;
+        }
+
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+    
+    st.markdown(
+    """
+    <style>
+        .stNumberInput > div > div > input {
+            height: 20px; /* Adjust this value for the desired height */
+            font-size: 6px; /* You can also adjust the font size */
+        }
+    </style>
+    """, 
+    unsafe_allow_html=True
+)

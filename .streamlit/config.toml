@@ -1,0 +1,6 @@
+#Gitdark
+[theme]
+primaryColor = "#0EE87B"  # Fondo principal oscuro (casi negro)
+backgroundColor = "#121212"  # Fondo general oscuro
+secondaryBackgroundColor = "#1F1F1F"  # Fondo secundario (gris muy oscuro)
+textColor = "#FFFFFF"  # Texto blanco (para resaltar en fondo oscuro)
