@@ -54,6 +54,10 @@ def root_locus(figure_width, figure_height, dpi):
 
         # Leyenda con fuente más grande
         plt.legend(fontsize=14)
+        plt.tight_layout()  # Ajusta automáticamente los subgráficos para evitar superposición
+
+    # Añadir una pequeña separación adicional para evitar el solapamiento de etiquetas
+        plt.subplots_adjust(hspace=0.4, wspace=0.3)
 
         # Mostrar el gráfico en Streamlit
         st.pyplot(plt)
