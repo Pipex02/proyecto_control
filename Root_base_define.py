@@ -50,7 +50,7 @@ def root_locus(figure_width, figure_height, dpi):
         for p in poles:
             plt.plot(np.real(p), np.imag(p), 'rx', label='Polos', markersize=17, markeredgewidth=5)  # Aumentar el tamaño de los marcadores y grosor
         for z in zeros:
-            plt.plot(np.real(z), np.imag(z), 'bo', label='Ceros', markersize=5, markeredgewidth=2)  # Aumentar el tamaño de los marcadores y grosor
+            plt.plot(np.real(z), np.imag(z), 'bo', label='Ceros', markersize=5, markeredgewidth=5)  # Aumentar el tamaño de los marcadores y grosor
 
         # Leyenda con fuente más grande
         plt.legend(fontsize=14)
