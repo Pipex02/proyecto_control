@@ -54,9 +54,9 @@ st.title("Análisis del Lugar de las Raíces del Sistema de Control")
 # Caja desplegable con los controles deslizantes
 with st.expander("Configurar gráfico", expanded=False):  # Se puede poner expanded=True para que esté expandido por defecto
     # Configuración de la figura
-    figure_width = st.slider("Ancho del gráfico (en pulgadas)", min_value=15, max_value=16, value=16)  # Aumentar el tamaño de la figura
-    figure_height = st.slider("Alto del gráfico (en pulgadas)", min_value=8, max_value=10, value=9)
-    dpi = st.slider("Resolución del gráfico (DPI)", min_value=480, max_value=520, value=500)
+    figure_width = st.slider("Ancho del gráfico (en pulgadas)", min_value=4, max_value=4, value=4)  # Aumentar el tamaño de la figura
+    figure_height = st.slider("Alto del gráfico (en pulgadas)", min_value=8, max_value=8, value=8)
+    dpi = st.slider("Resolución del gráfico (DPI)", min_value=100, max_value=100, value=100)
 
 planta_seleccionada = st.selectbox("Selecciona el tipo de planta", ["Planta real", "Planta variable"])
 

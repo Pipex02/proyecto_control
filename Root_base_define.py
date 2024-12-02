@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
 from define_planta import define_parameters, define_plant, design_pid_controller, define_open_loop_system, calculate_plant_parameters, define_closed_loop_system
+
 # Establecer estilo de Seaborn
 sns.set(style="whitegrid")  # Aplicar un fondo limpio con líneas de cuadrícula suaves
 
@@ -26,8 +27,9 @@ def root_locus(figure_width, figure_height, dpi):
     # Definir sistema en lazo cerrado
     closed_loop_tf = define_closed_loop_system(open_loop_tf)
     ct.damp(closed_loop_tf, doprint=True)
+
     with st.container():
-    # Mostrar la gráfica y los polos en lazo cerrado
+        # Mostrar la gráfica y los polos en lazo cerrado
         plot_root_locus(open_loop_tf, figure_width, figure_height, dpi)
 
     # Mostrar información de los polos del sistema en lazo cerrado
@@ -63,10 +65,6 @@ def plot_root_locus(sys_tf, width, height, dpi):
     plt.legend(fontsize=14)
     plt.tight_layout()  # Ajusta automáticamente los subgráficos para evitar superposición
 
-# Añadir una pequeña separación adicional para evitar el solapamiento de etiquetas
-    plt.subplots_adjust(hspace=0.4, wspace=0.3)
-
     # Mostrar el gráfico en Streamlit
     st.pyplot(plt)
-    
-    # Contenedor para el gráfico
+
