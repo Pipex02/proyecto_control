@@ -34,14 +34,23 @@ def plot_bode_with_margins(sys_tf):
     # Calcular márgenes de ganancia y fase
     gm, pm, Wcg, Wcp = ct.margin(sys_tf)
 
-    # Imprimir los márgenes y frecuencias de interés en el formato adecuado
+    # Crear un bloque de texto con los márgenes y las frecuencias de cruce
+    margin_info = ""
+
+    # Formatear la información de márgenes de ganancia y fase
     if gm is not None and gm > 0:
-        print(f"Margen de ganancia: {20 * np.log10(gm):.2f} dB")
+        margin_info += f"Margen de ganancia: {20 * np.log10(gm):.2f} dB\n"
     else:
-        print("Margen de ganancia: Infinito (estable)")
-    print(f"Margen de fase: {pm:.2f} grados")
-    print(f"Frecuencia de cruce de ganancia: {Wcg:.2f} rad/s" if Wcg and np.isfinite(Wcg) else "Frecuencia de cruce de ganancia: No definida")
-    print(f"Frecuencia de cruce de fase: {Wcp:.2f} rad/s" if Wcp and np.isfinite(Wcp) else "Frecuencia de cruce de fase: No definida")
+        margin_info += "Margen de ganancia: Infinito (estable)\n"
+
+    margin_info += f"Margen de fase: {pm:.2f} grados\n"
+    margin_info += (f"Frecuencia de cruce de ganancia: {Wcg:.2f} rad/s\n" 
+                    if Wcg and np.isfinite(Wcg) else "Frecuencia de cruce de ganancia: No definida\n")
+    margin_info += (f"Frecuencia de cruce de fase: {Wcp:.2f} rad/s\n" 
+                    if Wcp and np.isfinite(Wcp) else "Frecuencia de cruce de fase: No definida\n")
+
+    # Mostrar la información en Streamlit como un bloque de texto
+    st.text(margin_info)
 
     # Obtener datos para la magnitud, fase y frecuencias
     mag, phase, omega = ct.bode(sys_tf, dB=True, Hz=False, deg=True, plot=False)
