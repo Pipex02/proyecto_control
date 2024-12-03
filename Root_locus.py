@@ -5,7 +5,8 @@ import seaborn as sns
 import streamlit as st
 from Root_base_define import root_locus  # Asegúrate de tener la función root_locus definida en el archivo 'Root_base.py'
 from Root_base_nondefine import non_root_locus  # Asegúrate de tener la función root_locus definida en el archivo 'Root_base.py'
-
+from Nyquist_defined import nyquist_criterion_plot
+from Nyquist_non_define import non_nyquist_criterion
 
 # === Establecer el estilo de la página ===
 st.markdown(
@@ -13,7 +14,7 @@ st.markdown(
     <style>
     /* Ajuste del ancho máximo de la página */
     .block-container {
-        max-width: 100%;  /* Cambié max-width a 100% para que el contenedor ocupe todo el ancho de la pantalla */
+        max-width: 80%;  /* Cambié max-width a 100% para que el contenedor ocupe todo el ancho de la pantalla */
         margin: auto;
         padding-top: none;
         margin-top: 0px !important;
@@ -50,21 +51,29 @@ st.markdown(
     """, unsafe_allow_html=True)
 
 # Título de la página usando Streamlit (en lugar de HTML)
-st.title("Análisis del Lugar de las Raíces del Sistema de Control")
+st.title("Análisis del Sistema de Control")
 
 # Caja desplegable con los controles deslizantes
 with st.expander("Configurar gráfico", expanded=False):  # Se puede poner expanded=True para que esté expandido por defecto
     # Configuración de la figura
-    figure_width = st.slider("Ancho del gráfico (en pulgadas)", min_value=8, max_value=12, value=12)  # Aumentar el tamaño de la figura
-    figure_height = st.slider("Alto del gráfico (en pulgadas)", min_value=14, max_value=18, value=16)
+    figure_width = st.slider("Ancho del gráfico (en pulgadas)", min_value=5, max_value=12, value=12)  # Aumentar el tamaño de la figura
+    figure_height = st.slider("Alto del gráfico (en pulgadas)", min_value=7, max_value=18, value=16)
     dpi = st.slider("Resolución del gráfico (DPI)", min_value=80, max_value=120, value=100)
 
 planta_seleccionada = st.selectbox("Selecciona el tipo de planta", ["Planta real", "Planta variable"])
 
-if planta_seleccionada == "Planta real":
-    root_locus(figure_width, figure_height, dpi)
+# Opción de elección de gráfico
+grafico_seleccionado = st.radio("Selecciona el tipo de gráfico a generar:", 
+                                ("Ceros y polos", "Diagrama de Nyquist"))
 
-if planta_seleccionada == "Planta variable":
+# Función para el lugar de las raíces o el diagrama de Nyquist
+if planta_seleccionada == "Planta real":
+    if grafico_seleccionado == "Ceros y polos":
+        root_locus(figure_width, figure_height, dpi)
+    elif grafico_seleccionado == "Diagrama de Nyquist":
+        nyquist_criterion_plot(figure_width, figure_height, dpi)
+
+elif planta_seleccionada == "Planta variable":
     with st.expander("Modificar parámetros del sistema", expanded=False):  # expanded=False para que esté cerrado
         # Aquí eliminamos el uso de columnas en el contenedor del gráfico
         m = st.number_input("Masa de la bola (Kg)", value=0.0464)
@@ -95,4 +104,8 @@ if planta_seleccionada == "Planta variable":
         st.write(f"Ganancia integral (Ki): {Ki}")
         st.write(f"Ganancia derivativa (Kd): {Kd}")
 
-    non_root_locus(figure_width, figure_height, dpi, m, r, d, g, l, Kp, Ki, Kd)
+    if grafico_seleccionado == "Zeros y polos":
+        non_root_locus(figure_width, figure_height, dpi, m, r, d, g, l, Kp, Ki, Kd)
+    elif grafico_seleccionado == "Diagrama de Nyquist":
+        non_nyquist_criterion(figure_width, figure_height, dpi, m, r, d, g, l, Kp, Ki, Kd)
+    
