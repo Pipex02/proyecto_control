@@ -3,13 +3,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
-from non_define_planta import calculate_plant_parameters, define_plant, design_pid_controller, define_open_loop_system
+from non_define_planta import calculate_plant_parameters, define_plant, design_pid_controller, define_open_loop_system, define_closed_loop_system
 
 # Establecer el estilo de Seaborn para los gráficos
 sns.set(style="whitegrid")  # Fondo limpio con líneas de cuadrícula suaves
 
 # Función principal para la respuesta de frecuencia en el sistema en lazo abierto
-def Respuesta_non_frecuencia_abierto(m, r, d, g, l, Kp, Ki, Kd):
+def Respuesta_non_frecuencia_abierto(m, r, d, g, l, Kp, Ki, Kd, type):
     # Recuperar parámetros desde una función definida en otro archivo (ajustar según corresponda)
     
     # Calcular los parámetros de la planta
@@ -25,32 +25,38 @@ def Respuesta_non_frecuencia_abierto(m, r, d, g, l, Kp, Ki, Kd):
 
     # Definir sistema en lazo abierto
     open_loop_tf = define_open_loop_system(plant_tf_sym, pid_tf)
-
-    # Llamar a la función para graficar el diagrama de Bode
-    plot_bode_with_margins(open_loop_tf)
+    closed_loop = define_closed_loop_system(open_loop_tf)
+    
+    if type == 2:
+        # Llamar a la función para graficar el diagrama de Bode
+        plot_bode_with_margins(open_loop_tf)
+    if type == 1:
+        plot_bode_with_margins(closed_loop)
 
 # Función para graficar el Diagrama de Bode con márgenes de ganancia y fase
 def plot_bode_with_margins(sys_tf):
     # Calcular márgenes de ganancia y fase
     gm, pm, Wcg, Wcp = ct.margin(sys_tf)
 
-    # Crear un bloque de texto con los márgenes y las frecuencias de cruce
-    margin_info = ""
+    # Crear un bloque expandible con el título "Márgenes de ganancia y fase"
+    with st.expander("Márgenes de ganancia y fase"):
+        # Crear un bloque de texto con los márgenes y las frecuencias de cruce
+        margin_info = ""
 
-    # Formatear la información de márgenes de ganancia y fase
-    if gm is not None and gm > 0:
-        margin_info += f"Margen de ganancia: {20 * np.log10(gm):.2f} dB\n"
-    else:
-        margin_info += "Margen de ganancia: Infinito (estable)\n"
+        # Formatear la información de márgenes de ganancia y fase
+        if gm is not None and gm > 0:
+            margin_info += f"Margen de ganancia: {20 * np.log10(gm):.2f} dB\n"
+        else:
+            margin_info += "Margen de ganancia: Infinito (estable)\n"
 
-    margin_info += f"Margen de fase: {pm:.2f} grados\n"
-    margin_info += (f"Frecuencia de cruce de ganancia: {Wcg:.2f} rad/s\n" 
-                    if Wcg and np.isfinite(Wcg) else "Frecuencia de cruce de ganancia: No definida\n")
-    margin_info += (f"Frecuencia de cruce de fase: {Wcp:.2f} rad/s\n" 
-                    if Wcp and np.isfinite(Wcp) else "Frecuencia de cruce de fase: No definida\n")
+        margin_info += f"Margen de fase: {pm:.2f} grados\n"
+        margin_info += (f"Frecuencia de cruce de ganancia: {Wcg:.2f} rad/s\n" 
+                        if Wcg and np.isfinite(Wcg) else "Frecuencia de cruce de ganancia: No definida\n")
+        margin_info += (f"Frecuencia de cruce de fase: {Wcp:.2f} rad/s\n" 
+                        if Wcp and np.isfinite(Wcp) else "Frecuencia de cruce de fase: No definida\n")
 
-    # Mostrar la información en Streamlit como un bloque de texto
-    st.text(margin_info)
+        # Mostrar la información en Streamlit como un bloque de texto
+        st.text(margin_info)
 
     # Obtener datos para la magnitud, fase y frecuencias
     mag, phase, omega = ct.bode(sys_tf, dB=True, Hz=False, deg=True, plot=False)

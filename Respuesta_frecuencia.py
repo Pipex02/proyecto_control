@@ -24,13 +24,17 @@ st.markdown(
 
 st.header("Respuestas en frecuencia del Sistema")
 planta_seleccionada = st.selectbox("Selecciona el tipo de planta", ["Planta real", "Planta variable"])
-
+Select = st.radio("Selecciona lo que deseas ver:", ("Close loop", "Open loop"))
 def main():
-        
+    type = 0
+    if Select == "Close loop":
+        type = 1
+    elif Select == "Open loop":
+        type = 2
     # Parámetros para la Planta real
     if planta_seleccionada == "Planta real":
         m, r, d, g, l, j, Kp, Ki, Kd = define_parameters()
-        Respuesta_frecuencia_abierto()
+        Respuesta_frecuencia_abierto(type)
         
     mostrar_parametros = st.checkbox("Mostrar parámetros")
     
@@ -55,7 +59,7 @@ def main():
                 Ki = st.number_input("Ganancia integral (Ki)", value=13)
                 Kd = st.number_input("Ganancia derivativa (Kd)", value=30)
 
-        Respuesta_non_frecuencia_abierto(m, r, d, g, l, Kp, Ki, Kd)
+        Respuesta_non_frecuencia_abierto(m, r, d, g, l, Kp, Ki, Kd, type)
     # Opción para mostrar u ocultar los parámetros
     
 

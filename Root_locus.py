@@ -8,6 +8,7 @@ from Root_base_nondefine import non_root_locus  # Asegúrate de tener la funció
 from Nyquist_defined import nyquist_criterion_plot
 from Nyquist_non_define import non_nyquist_criterion
 
+
 # === Establecer el estilo de la página ===
 st.markdown(
     """
@@ -74,9 +75,9 @@ if planta_seleccionada == "Planta real":
         nyquist_criterion_plot(figure_width, figure_height, dpi)
 
 if planta_seleccionada == "Planta variable":
-    if grafico_seleccionado == "Zeros y polos":
+    if grafico_seleccionado == "Ceros y polos":
         non_root_locus(figure_width, figure_height, dpi, m, r, d, g, l, Kp, Ki, Kd)
-    if grafico_seleccionado == "Diagrama de Nyquist":
+    elif grafico_seleccionado == "Diagrama de Nyquist":
         non_nyquist_criterion(figure_width, figure_height, dpi, m, r, d, g, l, Kp, Ki, Kd)
         
     with st.expander("Modificar parámetros del sistema", expanded=False):  # expanded=False para que esté cerrado
