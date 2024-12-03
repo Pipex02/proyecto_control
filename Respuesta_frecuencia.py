@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
 from define_frecuencia import Respuesta_frecuencia_abierto  # Asegúrate de tener la función root_locus definida en el archivo 'Root_base.py'
+from non_define_frecuencia import Respuesta_non_frecuencia_abierto  # Asegúrate de tener la función root_locus definida en el archivo 'Root_base.py'
 from Root_base_nondefine import non_root_locus  # Asegúrate de tener la función root_locus definida en el archivo 'Root_base.py'
 from define_planta import define_parameters
 
@@ -31,6 +32,7 @@ def main():
         m, r, d, g, l, j, Kp, Ki, Kd = define_parameters()
         Respuesta_frecuencia_abierto()
         
+    mostrar_parametros = st.checkbox("Mostrar parámetros")
     
     # Parámetros para la Planta variable
     if planta_seleccionada == "Planta variable":
@@ -53,8 +55,9 @@ def main():
                 Ki = st.number_input("Ganancia integral (Ki)", value=13)
                 Kd = st.number_input("Ganancia derivativa (Kd)", value=30)
 
+        Respuesta_non_frecuencia_abierto(m, r, d, g, l, Kp, Ki, Kd)
     # Opción para mostrar u ocultar los parámetros
-    mostrar_parametros = st.checkbox("Mostrar parámetros")
+    
 
     # Si el checkbox está marcado, mostramos los parámetros en 3 columnas
     if mostrar_parametros:
@@ -76,6 +79,5 @@ def main():
         with col3:
             st.write(f"Ganancia integral (Ki): {Ki}")
             st.write(f"Ganancia derivativa (Kd): {Kd}") 
-
-        
+  
 main()

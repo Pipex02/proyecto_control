@@ -3,16 +3,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
-from define_planta import define_parameters, calculate_plant_parameters, define_plant, design_pid_controller, define_open_loop_system
+from non_define_planta import calculate_plant_parameters, define_plant, design_pid_controller, define_open_loop_system
 
 # Establecer el estilo de Seaborn para los gráficos
-sns.set(style="whitegrid", palette="muted")  # Fondo limpio con líneas de cuadrícula suaves
+sns.set(style="whitegrid")  # Fondo limpio con líneas de cuadrícula suaves
 
 # Función principal para la respuesta de frecuencia en el sistema en lazo abierto
-def Respuesta_frecuencia_abierto():
+def Respuesta_non_frecuencia_abierto(m, r, d, g, l, Kp, Ki, Kd):
     # Recuperar parámetros desde una función definida en otro archivo (ajustar según corresponda)
-    m, r, d, g, l, j, Kp, Ki, Kd = define_parameters()
-
+    
     # Calcular los parámetros de la planta
     numerador = calculate_plant_parameters(m, r, d, g, l)
     plant_num = [numerador]  # Numerador de la planta
@@ -51,20 +50,20 @@ def plot_bode_with_margins(sys_tf):
     fig, axs = plt.subplots(2, 1, figsize=(10, 7))
 
     # Graficar la magnitud (en dB)
-    axs[0].semilogx(omega, 20 * np.log10(mag), label="Magnitud (dB)", color=sns.color_palette("Blues")[2])
+    axs[0].semilogx(omega, 20 * np.log10(mag), label="Magnitud (dB)")
     if Wcg is not None and np.isfinite(Wcg):
         axs[0].axvline(x=Wcg, color='r', linestyle='--', label=f"Frec. cruce ganancia: {Wcg:.2f} rad/s")
     axs[0].set_ylabel("Magnitud (dB)")
-    axs[0].grid(True, which="both", linestyle="--", linewidth=0.5)
+    axs[0].grid(True)
     axs[0].legend()
 
     # Graficar la fase (en grados)
-    axs[1].semilogx(omega, phase * (180 / np.pi), label="Fase (°)", color=sns.color_palette("coolwarm")[1])
+    axs[1].semilogx(omega, phase * (180 / np.pi), label="Fase (°)")
     if Wcp is not None and np.isfinite(Wcp):
-        axs[1].axvline(x=Wcp, color='g', linestyle='--', label=f"Frec. cruce fase: {Wcp:.2f} rad/s")
+        axs[1].axvline(x=Wcp, color='b', linestyle='--', label=f"Frec. cruce fase: {Wcp:.2f} rad/s")
     axs[1].set_ylabel("Fase (°)")
     axs[1].set_xlabel("Frecuencia (rad/s)")
-    axs[1].grid(True, which="both", linestyle="--", linewidth=0.5)
+    axs[1].grid(True)
     axs[1].legend()
 
     # Configurar el título
