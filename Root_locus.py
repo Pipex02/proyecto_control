@@ -73,7 +73,12 @@ if planta_seleccionada == "Planta real":
     elif grafico_seleccionado == "Diagrama de Nyquist":
         nyquist_criterion_plot(figure_width, figure_height, dpi)
 
-elif planta_seleccionada == "Planta variable":
+if planta_seleccionada == "Planta variable":
+    if grafico_seleccionado == "Zeros y polos":
+        non_root_locus(figure_width, figure_height, dpi, m, r, d, g, l, Kp, Ki, Kd)
+    if grafico_seleccionado == "Diagrama de Nyquist":
+        non_nyquist_criterion(figure_width, figure_height, dpi, m, r, d, g, l, Kp, Ki, Kd)
+        
     with st.expander("Modificar parámetros del sistema", expanded=False):  # expanded=False para que esté cerrado
         # Aquí eliminamos el uso de columnas en el contenedor del gráfico
         m = st.number_input("Masa de la bola (Kg)", value=0.0464)
@@ -104,8 +109,5 @@ elif planta_seleccionada == "Planta variable":
         st.write(f"Ganancia integral (Ki): {Ki}")
         st.write(f"Ganancia derivativa (Kd): {Kd}")
 
-    if grafico_seleccionado == "Zeros y polos":
-        non_root_locus(figure_width, figure_height, dpi, m, r, d, g, l, Kp, Ki, Kd)
-    elif grafico_seleccionado == "Diagrama de Nyquist":
-        non_nyquist_criterion(figure_width, figure_height, dpi, m, r, d, g, l, Kp, Ki, Kd)
+    
     

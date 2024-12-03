@@ -46,7 +46,7 @@ def plot_root_locus(sys_tf, width, height, dpi):
     sns.set_context("talk", font_scale=1.8)  # Aumentar tamaño de fuentes y elementos visuales
     sns.set_context("poster", font_scale=1.4)
 
-    ct.root_locus(sys_open_loop, grid=True)
+    ct.pole_zero_plot(sys_open_loop, grid=True)
 
     # Obtener polos del sistema
     poles = ct.poles(sys_open_loop)

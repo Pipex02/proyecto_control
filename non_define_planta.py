@@ -8,7 +8,7 @@ import streamlit as st
 def define_plant_symbolic(num, den):
     s = sp.symbols('s')
     num_sym = sum([coef * s**i for i, coef in enumerate(num[::-1])])
-    den_sym = sum([coef * s**i for i, coef in enumerate(den[::-1])])
+    den_sym = sum([coef * s**(i*3) for i, coef in enumerate(den[::-1])])
     plant_tf_sym = num_sym / den_sym
     return plant_tf_sym
 

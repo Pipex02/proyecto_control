@@ -41,7 +41,7 @@ def non_root_locus(figure_width, figure_height, dpi, m, r, d, g, l, Kp, Ki, Kd):
         ct.root_locus(sys_open_loop, grid=True)
 
         # Configurar título y etiquetas
-        plt.title('Polos y ceros del sistema', fontsize=35)
+        plt.title('Polos y ceros', fontsize=35)
         plt.xlabel('Parte Real', fontsize=14)
         plt.ylabel('Parte Imaginaria', fontsize=14)
         
