@@ -51,15 +51,15 @@ st.markdown(
     """, unsafe_allow_html=True)
 
 # Título de la página usando Streamlit (en lugar de HTML)
-st.title("Análisis del Sistema de Control")
+st.title("Análisis estabilidad del sistema")
 
 # Caja desplegable con los controles deslizantes
 with st.expander("Configurar gráfico", expanded=False):  # Se puede poner expanded=True para que esté expandido por defecto
-    # Configuración de la figura
-    figure_width = st.slider("Ancho del gráfico (en pulgadas)", min_value=5, max_value=12, value=12)  # Aumentar el tamaño de la figura
-    figure_height = st.slider("Alto del gráfico (en pulgadas)", min_value=7, max_value=18, value=16)
-    dpi = st.slider("Resolución del gráfico (DPI)", min_value=80, max_value=120, value=100)
-
+    # Configuración de la figura con botones de incremento y decremento
+    figure_width = st.number_input("Ancho del gráfico (en pulgadas)", min_value=5, max_value=12, value=12, step=1)  # Aumentar el tamaño de la figura
+    figure_height = st.number_input("Alto del gráfico (en pulgadas)", min_value=7, max_value=18, value=16, step=1)
+    dpi = st.number_input("Resolución del gráfico (DPI)", min_value=80, max_value=120, value=100, step=10)
+    
 planta_seleccionada = st.selectbox("Selecciona el tipo de planta", ["Planta real", "Planta variable"])
 
 # Opción de elección de gráfico

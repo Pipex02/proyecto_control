@@ -66,7 +66,7 @@ def plot_root_locus(sys_tf, width, height, dpi):
     plt.ylim(min_real_zero - 7, max_real_zero + 7)  # Ajustar el rango de la parte imaginaria (puedes modificar este valor también)
 
     # Configurar título y etiquetas
-    plt.title('Lugar de las Raíces del Sistema', fontsize=35)
+    plt.title('Polos y ceros del sistema', fontsize=35)
     plt.xlabel('Parte Real', fontsize=14)
     plt.ylabel('Parte Imaginaria', fontsize=14)
     
